@@ -7,10 +7,12 @@ from datetime import datetime
 # import time
 
 #Input file name without .ext
-fileName='DRUID2'
+fileName='1sizeV2'
 config_printer={}
 #To exposition time correction or comment this line for get from gcode
-config_printer['Layer Time']=3000 # ms
+config_printer['Layer Time']=5000 # ms
+config_printer['Z Bottom Lift Feed Rate']=30
+speed_of_lift_down=config_printer['Z Lift Feed Rate']=30
 #speed has been incread after this heigth
 FirstLayersHeight=2 #mm
 
@@ -106,6 +108,7 @@ with open('Out/tmp1/chitu.gcode', 'w') as fout:
 	time_of_lift_up2=0#int(config_printer['Blanking Layer Time']/2)
 	liftDn=-config_printer['Lift Distance']+float(config_printer['Layer Thickness'])
 	speed_of_lift_down=config_printer['Z Lift Feed Rate']
+	speed_of_lift_down/=2
 	time_of_lift_down=int(60000.* -liftDn/ speed_of_lift_down)
 
 	number_BotLayers=config_printer['Number of Bottom Layers']

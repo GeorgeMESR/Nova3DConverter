@@ -11,17 +11,17 @@ import os
 Image.MAX_IMAGE_PIXELS = None
 
 fileName='Bno080'
-#Layers='Bot'
+Layers='Bot'
 # Layers='Top'
-Layers='Both'
+#Layers='Both'
 
 #change drill to small plate
 drilldiam=0.3
 drillintop=False
 #drillintop=True
 
-Exposition = 7 #s
-Waiting= 30 #s
+Exposition = 15 #s
+Waiting= 5 #s
 Negative=False
 
 
@@ -243,18 +243,26 @@ def makeImage(ctx, ctx_cats, mirror_layer, make_cuts_in_bk):
 	print('Make printer\'s image')
 	#full resolution 3D printer screen image  - 2 layer
 	imageRaw = Image.new("RGB", (ResY, ResX))
+	draw = ImageDraw.Draw(imageRaw)
+	draw.rectangle((0,0,ResY,ResX),fill=(0,0,0))
+	draw.rectangle((StartY,StartX,StartY+sizePxlY*ScaleY,StartX+sizePxlX*ScaleX),fill=(negpxl,negpxl,negpxl))
 	#image with resolution for mono 3D printer - 2 layer
 	imageCWS = Image.new("RGB", (int(ResY/3),ResX))
+	draw = ImageDraw.Draw(imageCWS)
+	draw.rectangle((0,0,ResY,ResX),fill=(0,0,0))
+	draw.rectangle((StartY,StartX,StartY+sizePxlY*ScaleY,StartX+sizePxlX*ScaleX),fill=(negpxl,negpxl,negpxl))
 	#full resolution 3D printer screen background image- 1 layer
 	imageRawBg = Image.new("RGB", (ResY, ResX))
 	draw = ImageDraw.Draw(imageRawBg)
-	draw.rectangle((0,0,ResY,ResX),fill=(pospxl,pospxl,pospxl))
-	draw.rectangle((StartY,StartX,StartY+sizePxlY*ScaleY,StartX+sizePxlX*ScaleX),fill=(negpxl,negpxl,negpxl))
+	draw.rectangle((0,0,ResY,ResX),fill=(0,0,0))
+	draw.rectangle((StartY,StartX,StartY+sizePxlY*ScaleY,StartX+sizePxlX*ScaleX),fill=(255,255,255))
+	draw.rectangle((StartY+1,StartX+1,StartY+sizePxlY*ScaleY-1,StartX+sizePxlX*ScaleX-1),fill=(0,0,0))
 	#background image with  resolution for mono 3D printer - 1 layer
 	imageCWSBg = Image.new("RGB", (int(ResY/3),ResX))
 	draw = ImageDraw.Draw(imageCWSBg)
-	draw.rectangle((0,0,int(ResY/3),ResX),fill=(pospxl,pospxl,pospxl))
-	draw.rectangle((int(StartY/3),StartX,int((StartY+sizePxlY*ScaleY)/3),StartX+sizePxlX*ScaleX),fill=(negpxl,negpxl,negpxl))
+	draw.rectangle((0,0,int(ResY/3),ResX),fill=(0,0,0))
+	draw.rectangle((int(StartY/3),StartX,int((StartY+sizePxlY*ScaleY)/3),StartX+sizePxlX*ScaleX),fill=(255,255,255))
+	draw.rectangle((int(StartY/3)+1,StartX+1,int((StartY+sizePxlY*ScaleY)/3)-1,StartX+sizePxlX*ScaleX-1),fill=(0,0,0))
 	treshold= 512
 	WCTX, YCTX=imageCTX.size
 	for  j in range(0,int(YCTX*ScaleY)-2,3):
@@ -311,7 +319,7 @@ def makeImage(ctx, ctx_cats, mirror_layer, make_cuts_in_bk):
 
 
 if (Layers == 'Both' or Layers == 'Top'):
-	imageRaw, imageRawBg, imageCWS, imageCWSBg, imagePreviewMini=makeImage(ctx_top,ctx_cuts, False, True)
+	imageRaw, imageRawBg, imageCWS, imageCWSBg, imagePreviewMini=makeImage(ctx_top,ctx_cuts, True, True)
 	imageRaw.save('Out/tmp1/preview.png')
 	imagePreviewMini.save('Out/tmp1/preview_mini.png')
 	imageCWS.save('Out/tmp1/'+fileName+'_F001.png')
@@ -328,7 +336,7 @@ if (Layers == 'Both' or Layers == 'Top'):
 	csw.close()
 
 if (Layers == 'Both' or Layers == 'Bot'):
-	imageRaw, imageRawBg, imageCWS, imageCWSBg, imagePreviewMini=makeImage(ctx_bot,ctx_cuts, True, False)
+	imageRaw, imageRawBg, imageCWS, imageCWSBg, imagePreviewMini=makeImage(ctx_bot,ctx_cuts, False, False)
 	imageRaw.save('Out/tmp1/preview.png')
 	imagePreviewMini.save('Out/tmp1/preview_mini.png')
 	imageCWS.save('Out/tmp1/'+fileName+'_B001.png')
